@@ -29,8 +29,8 @@ def collide_cbc_mac():
     k = 0
     while (not all(ord(char) < 127 and ord(char) > 32 and ord(char) != 39 for char in temp)) or len(temp) != 16:
         original_temp = temp
-        j = ''.join(choice(ascii_lowercase) for i in range(0,6))
-        M_prime[1] = 'ot a hash"'+j
+        j = ''.join(choice(ascii_lowercase) for i in range(0,5))
+        M_prime[1] = 'ot a hash"#'+j
         K = "sixteen byte key"
         temp = "0000000000000000"
         M_prime[0] = strxor(temp,M_prime[0][:16])
@@ -49,14 +49,15 @@ def collide_cbc_mac():
         k += 1
         if k % 100000 == 0:
             print(k,)
-
-    print('print "CBC-MAC n'+M_prime[1]+temp)
+    print 'print "CBC-MAC n'+M_prime[1]+temp
+    return 'print "CBC-MAC n'+M_prime[1]+temp
 
 def hash_from_cbcmac(M):
     K = "sixteen byte key"
     return cbcmac(K, M)
 
-print(hex(0x0551c3ea1ca68f81fcf9d718d004ea93 ^ 0x6420686173682066756e6374696f6e22) == '6171ab8b6fceafe78997b46cb96b84b1')
+exec(collide_cbc_mac())
+print(hex(0x0551c3ea1ca68f81fcf9d718d004ea93 ^ 0x6420686173682066756e6374696f6e22).lstrip("0x").rstrip("L") == '6171ab8b6fceafe78997b46cb96b84b1')
 print(hash_from_cbcmac('print "CBC-MAC not a hash"mvskwqe!l][#{OQNR?U:*I') == hash_from_cbcmac('print "CBC-MAC yields a very good hash function"'))
 
-collide_cbc_mac()
+#collide_cbc_mac()
