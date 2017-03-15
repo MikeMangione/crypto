@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import hashlib
+import gnupg
+import string
+import textwrap
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA
 from base64 import b64decode
-import gnupg
+
 
 def hash_tests(input):
     temp = hashlib.sha256(input).hexdigest()
@@ -41,7 +44,33 @@ def prog_pgp():
             break
     return f_message, f_password
 
+def letter_shift(offset,plain_list,m):
+    ct_list, ciphertext = ['' for x in plain_list], ''
+    for p in range(0,len(plain_list)):
+        ct_list[p] = plain_list[(plain_list.index(offset) + p)%len(plain_list)]
+    for p in range(0,len(m)):
+        ciphertext += ct_list[plain_list.index(m[p])]
+    print ciphertext
+
+def caeser_breaker(message,offset='A',offset_loop=False):
+    offset = string.upper(offset)
+    print offset[0]
+    pt_list = textwrap.wrap(string.ascii_uppercase,1)
+    if offset_loop:
+        for letter in pt_list:
+            letter_shift(letter,pt_list,message)
+    else:
+        letter_shift(offset,pt_list,message)
+
+def bitcoin_breaker():
+    s = hashlib.new('sha256',str(94176137926187438630526725483965175646602324181311814940191841477114099191175)).digest()
+    r = hashlib.new('ripemd160', s).digest()
+    print int(r)
+
+
 #hash_tests("id0-rsa.pub")
 #rsa_prog_decrypt()
 #rsa_decrypt()
 #prog_pgp()
+#caeser_breaker('ZNKIGKYGXIOVNKXOYGXKGRREURJIOVNKXCNOINOYXKGRRECKGQOSTUZYAXKNUCURJHKIGAYKOSZUURGFEZURUUQGZZNKCOQOVGMKGZZNKSUSKTZHAZOLOMAXKOZYMUZZUHKGZRKGYZROQKLOLZEEKGXYURJUXCNGZKBKXBGPJADLIVBAYKZNUYKRGYZZKTINGXGIZKXYGYZNKYURAZOUT',offset_loop=True)
+bitcoin_breaker()
